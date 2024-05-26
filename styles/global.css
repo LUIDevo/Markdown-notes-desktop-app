@@ -1,0 +1,133 @@
+@font-face{
+    font-family: myFont;
+    src: url(../resources/fonts/JetBrainsMonoNL-Regular.ttf)
+}
+body{
+    background-color: #ffff;
+    font-family: myFont;
+    overflow: hidden;
+    margin: 0;
+}
+p{
+    margin: 0;
+    font-size: 18px;
+}
+input{
+    background-color: transparent;
+    color: white;
+    all: unset;
+}
+.flex{
+    display: flex;
+}
+.home-container{
+    gap: 16px;
+}
+.column{
+    flex-direction: column;
+}
+.full{
+    width: 100%;
+}
+.folder-container{
+    width: 14vw;
+    height: 100vh;
+    box-sizing: border-box;
+    padding: 64px 16px;
+    min-width: 256px;
+    gap: 32px;
+    background-color: #f5f5f5;
+    justify-content: space-between;
+}
+.subjects-container{
+    gap: 24px;
+    font-size: 14px;
+}
+.subject{
+    color: black;
+    transition: padding 0.3s ease-in-out;
+}
+.selected-folder{
+    background-color: #1D2123;
+    border: 1px solid #3c4142;
+    color: white;
+    padding: 12px 16px;
+    width: 85%;
+    border-radius: 4px;
+}
+
+.not-selected-folder{
+    padding: 0 0 0 16px;
+}
+.button-content {
+    display: flex;
+    padding: 12px 24px;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 16px;
+    color: black;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    font-size: 14px;
+    letter-spacing: 0.4px;
+    border: 1px solid #3c4142;
+    transition: all 0.3 ease-in-out;
+}
+.lower-nav-container{
+    gap: 8px;
+    transition: all 0.3 ease-in-out;
+}
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    opacity: 0; 
+    animation: fade 0.3s ease-in-out forwards; 
+}
+
+@keyframes fade {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+input[type=text]::placeholder {
+    color: #E6E8EA;
+}
+.add-folder-title {
+    margin-top: 4px;
+    margin-left: 2px;
+}
+.finish-create-button {
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px 0 8px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: black;
+    border: 1px solid #1D2123;
+    border-radius: 4px;
+}
+.note-data-container {
+    padding-left: 16px;
+}
+.tiptap {
+    outline: none;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 86px 0 0 64px;
+    color: black;
+}
+.activity-container {
+    width: 100%;
+}
