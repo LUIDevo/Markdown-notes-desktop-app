@@ -1,5 +1,5 @@
 import React , { useState, useEffect } from 'react'
-import '../../styles/global.css'
+import '../../styles/dark.css'
 
 export default function SideBar({ folderData, onFolderSelect, createNewSomething, createState, setCreateState, noteData, setSelectedNote, setNewFileChange, newFileChange, onNoteSelect  }) {
     const [selectedFolder, setSelectedFolder] = useState(null);
@@ -33,13 +33,23 @@ export default function SideBar({ folderData, onFolderSelect, createNewSomething
         );
         onFolderSelect(folder);
     };
+    const reset = () => {
+        setQueryNameState(false)
+        setQueryTypeState(true)
+        setNewState(false)
+    }
 
     const buttonClicked = () => {
         setNewState(!newState)
+        if (newState) {
+            reset()
+        }
+        
     }
 
     const createNewSomethingHandler = () => {
         createNewSomething(inputValue, newFileChange); // Call the function passed from the parent with inputValue as argument
+        reset()
     };
 
     // const createNewSomething = () => {

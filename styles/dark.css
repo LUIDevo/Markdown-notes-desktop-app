@@ -1,99 +1,115 @@
 @font-face{
     font-family: myFont;
-    src: url(../resources/fonts/POPPINS-REGULAR.TTF)
+    src: url(../resources/fonts/iAWriterMonoS-Regular.woff)
 }
+
 :root {
-    --light-bg: #ffff;
-    --light-folder-bg: #f5f5f5;
-    --light-selected-folder-bg: #1D2123;
-    --light-selected-folder-border: #3c4142;
-    --light-text: black;
-    --dropdown-placeholder-text: #E6E8EA;
+    --dark-bg: #18181a;
+    --dark-folder-bg: #131312;
+    --dark-selected-folder-bg: #313131;
+    --dark-selected-folder-border: #939b9e;
+    --dark-text: white;
+    --dropdown-placeholder-text-dark: #9CA3AF;
 }
-body{
-    background-color: var(--light-bg);
+
+body {
+    background-color: var(--dark-bg);
     font-family: myFont;
     overflow: hidden;
     margin: 0;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
-p{
+
+p {
     margin: 0;
     font-size: 18px;
 }
-input{
+
+input {
     background-color: transparent;
-    color: white;
+    color: var(--dark-text);
     all: unset;
 }
-.flex{
+
+.flex {
     display: flex;
 }
-.home-container{
+
+.home-container {
     gap: 16px;
 }
-.column{
+
+.column {
     flex-direction: column;
 }
-.full{
+
+.full {
     width: 100%;
 }
-.folder-container{
+
+.folder-container {
     width: 14vw;
     height: 100vh;
     box-sizing: border-box;
     padding: 64px 16px;
     min-width: 256px;
     gap: 32px;
-    background-color: var(--light-folder-bg);
+    background-color: var(--dark-folder-bg);
     justify-content: space-between;
 }
-.subjects-container{
+
+.subjects-container {
     gap: 24px;
     font-size: 14px;
 }
-.subject{
-    color: var(--light-text);
-    transition: padding 0.3s ease-in-out;
+
+.subject {
+    color: var(--dark-text);
+    transition: padding 0.3s ease-in-out, color 0.3s ease-in-out;
 }
-.selected-folder{
-    background-color: var(--light-selected-folder-bg);
-    border: 1px solid var(--light-selected-folder-border);
-    color: var(--light-bg);
+
+.selected-folder {
+    background-color: var(--dark-selected-folder-bg);
+    border: 1px solid var(--dark-selected-folder-border);
+    color: var(--dark-text);
     padding: 12px 16px;
     width: 85%;
     border-radius: 4px;
 }
 
-.not-selected-folder{
+.not-selected-folder {
     padding: 0 0 0 16px;
 }
+
 .button-content {
     display: flex;
     padding: 12px 24px;
     width: 100%;
     box-sizing: border-box;
     gap: 16px;
-    color: var(--light-text);
+    color: var(--dark-text);
     justify-content: center;
     align-items: center;
     border-radius: 8px;
     font-size: 14px;
     letter-spacing: 0.4px;
-    border: 1px solid var(--light-selected-folder-border);
+    border: 1px solid var(--dark-selected-folder-border);
     transition: all 0.3 ease-in-out;
 }
-.lower-nav-container{
+
+.lower-nav-container {
     gap: 8px;
     transition: all 0.3 ease-in-out;
 }
+
 .dropdown {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 12px 16px;
     font-size: 14px;
-    background-color: var(--light-bg);
-    color: var(--light-text);
+    background-color: var(--dark-bg);
+    color: var(--dark-text);
     border-radius: 8px;
     opacity: 0; 
     animation: fade 0.3s ease-in-out forwards; 
@@ -107,13 +123,16 @@ input{
         opacity: 1;
     }
 }
+
 input[type=text]::placeholder {
-    color: var(--dropdown-placeholder-text);
+    color: var(--dropdown-placeholder-text-dark);
 }
+
 .add-folder-title {
     margin-top: 4px;
     margin-left: 2px;
 }
+
 .finish-create-button {
     margin-top: 8px;
     width: 100%;
@@ -121,21 +140,24 @@ input[type=text]::placeholder {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--light-text);
-    border: 1px solid var(--light-selected-folder-bg);
+    color: var(--dark-text);
+    border: 1px solid var(--dark-selected-folder-bg);
     border-radius: 4px;
 }
+
 .note-data-container {
     padding-left: 16px;
 }
+
 .tiptap {
     outline: none;
     display: flex;
     flex-direction: column;
     width: 100%;
     padding: 86px 0 0 64px;
-    color: var(--light-text);
+    color: var(--dark-text);
 }
+
 .activity-container {
     width: 100%;
 }
