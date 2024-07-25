@@ -38,7 +38,6 @@ export default function MarkdownContainer({ onJSONChange, content, setEditorCont
 
     return (
         <>
-             <TopBar selectednote={selectednote}/>
             {/* <button onClick={() => setShowImageInput(!showImageInput)}>Add Image</button>
             {showImageInput && (
                 <div style={{ marginTop: '10px' }}>

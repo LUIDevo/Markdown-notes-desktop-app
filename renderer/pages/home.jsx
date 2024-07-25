@@ -1,20 +1,36 @@
 import Link from 'next/link';
+import CollectionPopup from '../components/collection-popup';
+import ToolBar from '../components/toolbar';
 import '../../styles/dark.css';
 import SideBar from '../components/sidebar';
 import MarkdownContainer from '../components/markdown-container';
 import { useState, useEffect } from 'react';
+import TopBar from '../components/topbar';
+import Toolbar from '../components/toolbar';
+import Cookies from 'js-cookie';
 
 export default function HomePage() {
     const [folderData, setFolderData] = useState(null);
-    const [currentFolder, setCurrentFolder] = useState(null);
-    const [notes, setNotes] = useState(null);
-    const [createState, setCreateState] = useState("note");
-    const [selectedNote, setSelectedNote] = useState("hi");
-    const [newFileChange, setNewFileChange] = useState(null);
+    const [notes, setNotes] = useState([]);
+    const [selectedNote, setSelectedNote] = useState(null);
+    const [editorContent, setEditorContent] = useState('');
     const [json, setJson] = useState(null);
-    const [editorContent, setEditorContent] = useState('<p>Hello World!</p>');
+    const [currentFolder, setCurrentFolder] = useState(null);
+    const [createState, setCreateState] = useState('');
+    const [newFileChange, setNewFileChange] = useState('');
     const [triggerFetch, setTriggerFetch] = useState(false);
-    // When page loads get the folders and set it to sidebar
+    const [toggleState, setToggleState] = useState(false);
+
+    const [latestFiles, setLatestFiles] = useState([]);
+
+    const handleIconClick = () => {
+        setToggleState(prev => !prev);
+        console.log(toggleState);
+
+        const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
+        setLatestFiles(latestFilesFromCookies);
+    };
+
     useEffect(() => {
         async function fetchFolderData() {
             try {
@@ -39,10 +55,10 @@ export default function HomePage() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: inputValue })
         });
-        setTriggerFetch(prev => !prev)
+        setTriggerFetch(prev => !prev);
         console.log(response);
     };
-    // Gets all the folders in a certain folder
+
     const handleFolderSelect = async (folder) => {
         console.log("Selected folder:", folder);
         setCurrentFolder(folder);
@@ -61,7 +77,7 @@ export default function HomePage() {
             }
         }
     };
-    // Creates a new note
+
     const createNewNote = async (inputValue, newFileChange) => {
         try {
             console.log(newFileChange, inputValue);
@@ -75,12 +91,12 @@ export default function HomePage() {
             }
             const data = await response.json();
             console.log('Response:', data);
-            handleFolderSelect(newFileChange)
+            handleFolderSelect(newFileChange);
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
         }
     };
-    // Detects changes in note, gets content of folder and sets the editor content
+
     const handleNoteSelect = async (note) => {
         console.log("Selected Note:", note);
         if (note) {
@@ -96,14 +112,28 @@ export default function HomePage() {
                 }
                 const data = await response.json();
                 console.log(data);
-                setEditorContent(data.content); // Update editor content here
+                setEditorContent(data.content);
+                updateLatestFiles(currentFolder.title, note.title);
             } catch (error) {
                 console.error('Error fetching folder data:', error);
             }
         }
         setSelectedNote(note);
     };
-    // Base catch before creating either subject or note
+
+    const updateLatestFiles = (subject, title) => {
+        const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
+        const newFileEntry = { subject, title };
+
+        const updatedLatestFiles = latestFilesFromCookies.filter(file => file.subject !== subject || file.title !== title);
+
+        updatedLatestFiles.unshift(newFileEntry);
+
+        const latestFilesToStore = updatedLatestFiles.slice(0, 6);
+        console.log(JSON.stringify(latestFilesToStore))
+        Cookies.set('latestFiles', JSON.stringify(latestFilesToStore), { expires: 7 });
+    };
+
     const createNewSomething = async (inputValue) => {
         console.log("Input value:", inputValue);
         if (createState === "subject") {
@@ -112,7 +142,7 @@ export default function HomePage() {
             createNewNote(inputValue, newFileChange);
         }
     };
-    // Loop that uploads content of current note to database every 5 seconds
+
     useEffect(() => {
         if (selectedNote && currentFolder && json) {
             const interval = setInterval(() => {
@@ -122,7 +152,7 @@ export default function HomePage() {
             return () => clearInterval(interval);
         }
     }, [selectedNote, currentFolder, json]);
-    // Uploads content of local note to database
+
     const uploadContent = async (title, subject, content) => {
         try {
             const response = await fetch('http://localhost:3001/uploadContent', {
@@ -146,19 +176,19 @@ export default function HomePage() {
             console.error('There was a problem with the fetch operation:', error);
         }
     };
-    // Sets the editor content to variable json
+
     const handleJSONChange = async (json) => {
         console.log(json);
         setJson(json);
     };
 
     return (
-        <div className='flex'>
-            {folderData ? (
-                <SideBar
+        <>
+            {toggleState && 
+                <CollectionPopup 
+                    folderData={folderData}
                     onFolderSelect={handleFolderSelect}
                     createNewSomething={createNewSomething}
-                    folderData={folderData}
                     noteData={notes}
                     createState={createState}
                     setCreateState={setCreateState}
@@ -166,17 +196,28 @@ export default function HomePage() {
                     setNewFileChange={setNewFileChange}
                     newFileChange={newFileChange}
                     onNoteSelect={handleNoteSelect}
+                    latestFiles={latestFiles}
                 />
-            ) : (
-                <p>Loading...</p>
-            )}
-            <div className="activity-container flex column">
-                <MarkdownContainer
-                    onJSONChange={handleJSONChange}
-                    content={editorContent} // Pass editor content as prop
-                    selectednote={selectedNote.title ? selectedNote.title: "none"}
-                />
+            }
+
+            <div className='flex'>
+                {folderData ? (
+                    <>
+                        <Toolbar 
+                            handleIconClick={handleIconClick}
+                        />
+                    </>
+                ) : (
+                    <p>Loading...</p>
+                )}
+                <div className="activity-container flex column">
+                    <MarkdownContainer
+                        onJSONChange={handleJSONChange}
+                        content={editorContent}
+                        selectednote={selectedNote && selectedNote.title ? selectedNote.title : "none"}
+                    />
+                </div>
             </div>
-        </div>
+        </>
     );
 }

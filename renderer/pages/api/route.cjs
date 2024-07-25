@@ -83,6 +83,9 @@ app.get('/getFolders', (req, res) => {
     });
 });
 
+
+
+
 app.get('/getNotesInSubject/:folder', (req, res) => {
     const folder = req.params.folder;
     if (!folder) {
@@ -201,7 +204,7 @@ app.get('/delete', (req,res) => {
     res.sendStatus(200)
 })
 
-// // Function to insert a new note into the "docs" table
+// Function to insert a new note into the "docs" table
 // function createNote(title) {
 //     db.run('INSERT INTO docs (title) VALUES (?)', [title], (err) => {
 //         if (err) {
@@ -212,7 +215,7 @@ app.get('/delete', (req,res) => {
 //     });
 // }
 
-// // Function to query data from the "docs" table
+// Function to query data from the "docs" table
 app.post('/createNote', (req,res) => {
     const { subject, title } = req.body;
     console.log(subject,title)

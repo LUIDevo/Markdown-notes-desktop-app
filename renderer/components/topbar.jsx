@@ -1,25 +1,26 @@
-export default function TopBar(selectednote) {
-    let bibby = selectednote.title
+export default function TopBar(selectedNote) {
+    let bibby = selectedNote.selectedNote
     console.log(bibby)
     const clicked = () => {
-        console.log(bibby)
+        console.log("blooo bloo blibby", bibby)
+        console.log(bibby=="none")
     }
     return(
-        <>
+        <div className="top-bar">
             
             {
-                bibby ? 
-            <div className="">
-                {bibby.map((bib, index) => (
+                bibby!="none" ? 
+            <div className="" style={{color: "white"}}>
+                {/* {bibby.map((bib, index) => (
                     <div>{{bib}}</div>
-                ))}
-                ssdasdasdsaasd
+                ))} */}
+                {bibby}
             </div>
             :
             <div style={{color: "white"}}>nothing</div>
             }
             
             <button onClick={clicked}>Click me</button>
-        </>
+        </div>
     )
 }

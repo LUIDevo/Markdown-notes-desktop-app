@@ -5,7 +5,7 @@
 
 :root {
     --dark-bg: #18181a;
-    --dark-folder-bg: #131312;
+    --dark-folder-bg: #121212;
     --dark-selected-folder-bg: #313131;
     --dark-selected-folder-border: #939b9e;
     --dark-text: white;
@@ -15,7 +15,7 @@
 body {
     background-color: var(--dark-bg);
     font-family: myFont;
-    overflow: hidden;
+    overflow-x: hidden;
     margin: 0;
     transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
@@ -47,16 +47,6 @@ input {
     width: 100%;
 }
 
-.folder-container {
-    width: 14vw;
-    height: 100vh;
-    box-sizing: border-box;
-    padding: 64px 16px;
-    min-width: 256px;
-    gap: 32px;
-    background-color: var(--dark-folder-bg);
-    justify-content: space-between;
-}
 
 .subjects-container {
     gap: 24px;
@@ -66,6 +56,7 @@ input {
 .subject {
     color: var(--dark-text);
     transition: padding 0.3s ease-in-out, color 0.3s ease-in-out;
+    cursor: pointer;
 }
 
 .selected-folder {
@@ -160,4 +151,46 @@ input[type=text]::placeholder {
 
 .activity-container {
     width: 100%;
+}
+
+.toolbar-container {
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 24px;
+}
+.cover{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    pointer-events: none !important;
+    transition:  all ease-in-out 0.3s;
+}
+.popup{
+    background-color: #000000;
+    border: 1px solid #5e5e5e;
+    color: white;
+    gap: 32px;
+    padding: 128px 56px;
+    pointer-events: all !important;
+    transition:  all ease-in-out 0.3s;
+}
+
+.popup-container{
+    z-index: 11;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.darken{
+    background-color: #000000;
+    opacity: 0.3;
 }
