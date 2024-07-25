@@ -1,6 +1,18 @@
-import React from 'react'
-import { useState } from 'react';
-export default function collectionPopup({ folderData, onFolderSelect, createNewSomething, createState, setCreateState, noteData, setSelectedNote, setNewFileChange, newFileChange, onNoteSelect  }) {
+import React, { useState } from 'react';
+
+export default function CollectionPopup({ 
+    folderData, 
+    onFolderSelect, 
+    createNewSomething, 
+    createState, 
+    setCreateState, 
+    noteData, 
+    setSelectedNote, 
+    setNewFileChange, 
+    newFileChange, 
+    onNoteSelect, 
+    latestFiles 
+}) {
     const [selectedFolder, setSelectedFolder] = useState(null);
     const [selectedFolderContainer, setSelectedFolderContainer] = useState(null);
     const [newState, setNewState] = useState(false);
@@ -8,22 +20,20 @@ export default function collectionPopup({ folderData, onFolderSelect, createNewS
     const [queryTypeState, setQueryTypeState] = useState(true);
     const [inputValue, setInputValue] = useState(""); // State to store input value
 
-
     const handleSelectedNote = (note) => {
-        setSelectedNote(note)
-
-    }
+        setSelectedNote(note);
+    };
 
     const handleNewFileChange = (folder) => {
-        setNewFileChange(folder)
-    }
+        setNewFileChange(folder);
+    };
 
     const handleCreateStateChange = (newState) => {
         setCreateState(newState);
     };
 
     const handleFolderClick = (folder) => {
-        console.log(folder)
+        console.log(folder);
         setSelectedFolder((prevSelectedFolder) =>
             prevSelectedFolder === folder ? null : folder
         );
@@ -32,39 +42,43 @@ export default function collectionPopup({ folderData, onFolderSelect, createNewS
         );
         onFolderSelect(folder);
     };
+
     const reset = () => {
-        setQueryNameState(false)
-        setQueryTypeState(true)
-        setNewState(false)
-    }
+        setQueryNameState(false);
+        setQueryTypeState(true);
+        setNewState(false);
+    };
 
     const buttonClicked = () => {
-        setNewState(!newState)
+        setNewState(!newState);
         if (newState) {
-            reset()
+            reset();
         }
-        
-    }
+    };
+
     return (
-        <> 
+        <>
             <div className='cover darken'></div>
             <div className="cover popup-container">
-                 <div className="popup">
-                     Recent Files
-                     Folders
-                 
-                {folderData.map((folder) => (
-                    <div
-                        className={`flex subject column ${selectedFolderContainer === folder ? 'selected-folder-container' : ''}`} 
-                        style={{gap: "10px"}}
-                        key={folder.id}
-                    >   
-                        <div className={`subject folder-title ${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
-                            <p style={{ textTransform: 'capitalize', fontSize: '14px' } } >
-                                {folder.title}
-                            </p>
-                        </div>
-                        <div>
+                <div className="popup">
+                    <h3>Recent Files</h3>
+                    {latestFiles.map((file, index) => (
+                        <div key={index}>{file.title} - {file.subject}</div>
+                    ))}
+                    
+                    <h3>Folders</h3>
+                    {folderData.map((folder) => (
+                        <div
+                            className={`flex subject column ${selectedFolderContainer === folder ? 'selected-folder-container' : ''}`} 
+                            style={{gap: "10px"}}
+                            key={folder.id}
+                        >   
+                            <div className={`subject folder-title ${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
+                                <p style={{ textTransform: 'capitalize', fontSize: '14px' }}>
+                                    {folder.title}
+                                </p>
+                            </div>
+                            <div>
                                 {selectedFolder === folder && noteData && (
                                     <div className='note-data-container'>
                                         <div>
@@ -74,15 +88,11 @@ export default function collectionPopup({ folderData, onFolderSelect, createNewS
                                         </div>
                                     </div>
                                 )}
-                                
+                            </div>
                         </div>
-                    </div>
-                ))}
-         
-                     
+                    ))}
                 </div>
             </div>
-           
         </>
-    )
+    );
 }

@@ -129,7 +129,7 @@ export default function HomePage() {
 
         updatedLatestFiles.unshift(newFileEntry);
 
-        const latestFilesToStore = updatedLatestFiles.slice(0, 6);
+        const latestFilesToStore = updatedLatestFiles.slice(0, 8);
         console.log(JSON.stringify(latestFilesToStore))
         Cookies.set('latestFiles', JSON.stringify(latestFilesToStore), { expires: 7 });
     };
