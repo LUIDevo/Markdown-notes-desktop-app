@@ -83,9 +83,6 @@ app.get('/getFolders', (req, res) => {
     });
 });
 
-
-
-
 app.get('/getNotesInSubject/:folder', (req, res) => {
     const folder = req.params.folder;
     if (!folder) {

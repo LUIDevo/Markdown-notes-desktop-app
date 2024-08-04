@@ -61,9 +61,11 @@ export default function CollectionPopup({
             <div className='cover darken'></div>
             <div className="cover popup-container">
                 <div className="popup">
-                    <h3>Recent Files</h3>
+                    <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
                     {latestFiles.map((file, index) => (
-                        <div key={index}>{file.title} - {file.subject}</div>
+                        <div key={index} onClick={() => onNoteSelect(file)}>
+                            {file.title} - {file.subject}
+                        </div>
                     ))}
                     
                     <h3>Folders</h3>

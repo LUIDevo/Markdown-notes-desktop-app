@@ -178,7 +178,7 @@ input[type=text]::placeholder {
     border: 1px solid #5e5e5e;
     color: white;
     gap: 32px;
-    padding: 128px 56px;
+    padding: 56px 216px;
     pointer-events: all !important;
     transition:  all ease-in-out 0.3s;
 }
