@@ -33,7 +33,6 @@ export default function CollectionPopup({
     };
 
     const handleFolderClick = (folder) => {
-        console.log(folder);
         setSelectedFolder((prevSelectedFolder) =>
             prevSelectedFolder === folder ? null : folder
         );
@@ -61,13 +60,18 @@ export default function CollectionPopup({
             <div className='cover darken'></div>
             <div className="cover popup-container">
                 <div className="popup">
-                    <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
-                    {latestFiles.map((file, index) => (
-                        <div key={index} onClick={() => onNoteSelect(file)}>
-                            {file.title} - {file.subject}
-                        </div>
-                    ))}
-                    
+                    {/* Conditionally render latest files based on folder selection */}
+                    {!selectedFolder && (
+                        <>
+                            <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
+                            {latestFiles.map((file, index) => (
+                                <div key={index} onClick={() => onNoteSelect(file)}>
+                                    {file.title} - {file.subject}
+                                </div>
+                            ))}
+                        </>
+                    )}
+
                     <h3>Folders</h3>
                     {folderData.map((folder) => (
                         <div
