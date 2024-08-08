@@ -12,7 +12,6 @@ export default function SideBar({ folderData, onFolderSelect, createNewSomething
 
     const handleSelectedNote = (note) => {
         setSelectedNote(note)
-
     }
 
     const handleNewFileChange = (folder) => {

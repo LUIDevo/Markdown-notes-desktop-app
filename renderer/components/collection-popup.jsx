@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import "../../styles/popup.css";
 
 export default function CollectionPopup({ 
     folderData, 
@@ -8,6 +9,7 @@ export default function CollectionPopup({
     setCreateState, 
     noteData, 
     setSelectedNote, 
+    closePopup,
     setNewFileChange, 
     newFileChange, 
     onNoteSelect, 
@@ -20,18 +22,6 @@ export default function CollectionPopup({
     const [queryTypeState, setQueryTypeState] = useState(true);
     const [inputValue, setInputValue] = useState(""); // State to store input value
 
-    const handleSelectedNote = (note) => {
-        setSelectedNote(note);
-    };
-
-    const handleNewFileChange = (folder) => {
-        setNewFileChange(folder);
-    };
-
-    const handleCreateStateChange = (newState) => {
-        setCreateState(newState);
-    };
-
     const handleFolderClick = (folder) => {
         setSelectedFolder((prevSelectedFolder) =>
             prevSelectedFolder === folder ? null : folder
@@ -41,7 +31,6 @@ export default function CollectionPopup({
         );
         onFolderSelect(folder);
     };
-
     const reset = () => {
         setQueryNameState(false);
         setQueryTypeState(true);
@@ -60,43 +49,75 @@ export default function CollectionPopup({
             <div className='cover darken'></div>
             <div className="cover popup-container">
                 <div className="popup">
-                    {/* Conditionally render latest files based on folder selection */}
-                    {!selectedFolder && (
+                    {selectedFolder ? (
+                        <div className="folder-outer-container"> 
+                            <div className="folder-container"> 
+                                {folderData.map((folder) => (
+                                    selectedFolder === folder && (
+                                        <div
+                                            className={`flex subject column ${selectedFolderContainer === folder ? 'selected-folder-container' : ''}`} 
+                                            key={folder.id}
+                                        >   
+                                            <div className={`${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
+                                                <p className="folder-title "  style={{ textTransform: 'capitalize', fontSize: '16px' }}>
+                                                    {folder.title}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                {selectedFolder === folder && noteData && (
+                                                    <div className='note-data-container'>
+                                                        <div>
+                                                            {noteData.map((note, index) => (
+                                                                <li key={index} onClick={() => onNoteSelect(note)}>{note.title}</li>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
                         <>
+                            <div className="folder-outer-container"> 
+                                <h5>Folders</h5>
+                                <div className="folder-container"> 
+                                    {folderData.map((folder) => (
+                                        <div
+                                            className={`flex subject column ${selectedFolderContainer === folder ? 'selected-folder-container' : ''}`} 
+                                            key={folder.id}
+                                        >   
+                                            <div className={`${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
+                                                <p className="folder-title "  style={{ textTransform: 'capitalize', fontSize: '16px' }}>
+                                                    {folder.title}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                {selectedFolder === folder && noteData && (
+                                                    <div className='note-data-container'>
+                                                        <div>
+                                                            {noteData.map((note, index) => (
+                                                                <li key={index} onClick={() => {onNoteSelect(note); closePopup()}}>{note.title}</li>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="line-container"><div className="line"></div></div>
                             <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
                             {latestFiles.map((file, index) => (
-                                <div key={index} onClick={() => onNoteSelect(file)}>
+                                <div key={index} onClick={() => {onNoteSelect(file); }}>
                                     {file.title} - {file.subject}
                                 </div>
                             ))}
                         </>
                     )}
-
-                    <h3>Folders</h3>
-                    {folderData.map((folder) => (
-                        <div
-                            className={`flex subject column ${selectedFolderContainer === folder ? 'selected-folder-container' : ''}`} 
-                            style={{gap: "10px"}}
-                            key={folder.id}
-                        >   
-                            <div className={`subject folder-title ${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
-                                <p style={{ textTransform: 'capitalize', fontSize: '14px' }}>
-                                    {folder.title}
-                                </p>
-                            </div>
-                            <div>
-                                {selectedFolder === folder && noteData && (
-                                    <div className='note-data-container'>
-                                        <div>
-                                            {noteData.map((note, index) => (
-                                                <li key={index} onClick={() => onNoteSelect(note)}>{note.title}</li>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    ))}
                 </div>
             </div>
         </>

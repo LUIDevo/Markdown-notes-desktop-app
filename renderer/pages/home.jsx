@@ -30,6 +30,9 @@ export default function HomePage() {
         const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
         setLatestFiles(latestFilesFromCookies);
     };
+    const closePopup = () => {
+      handleIconClick()
+    }
 
     useEffect(() => {
         async function fetchFolderData() {
@@ -98,7 +101,7 @@ export default function HomePage() {
     };
 
     const handleNoteSelect = async (note) => {
-        console.log("Selected Note:", note);
+        console.log("Selected Note:", note, "Subject:", currentFolder);
         if (note) {
             try {
                 const noteString = note.title;
@@ -106,14 +109,15 @@ export default function HomePage() {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ subject: currentFolder.title, title: noteString })
-                });
+                }); 
                 if (!response.ok) {
                     throw new Error('Failed to fetch folder data');
                 }
                 const data = await response.json();
                 console.log(data);
                 setEditorContent(data.content);
-                updateLatestFiles(currentFolder.title, note.title);
+                updateLatestFiles(note.subject, note.title);
+                setCurrentFolder({ title: note.subject }); // Update current folder to match the note's subject
             } catch (error) {
                 console.error('Error fetching folder data:', error);
             }
@@ -196,6 +200,7 @@ export default function HomePage() {
                     setNewFileChange={setNewFileChange}
                     newFileChange={newFileChange}
                     onNoteSelect={handleNoteSelect}
+                    closePopup={closePopup} 
                     latestFiles={latestFiles}
                 />
             }
