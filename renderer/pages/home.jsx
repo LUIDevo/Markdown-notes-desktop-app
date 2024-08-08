@@ -108,7 +108,7 @@ export default function HomePage() {
         setSelectedNote(note);
     };
 
-    const updateLatestFiles = (subject, title) => {
+    const updateLatestFiles = (title, subject) => {
         const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
         const newFileEntry = { subject, title };
         console.log("fuck you", newFileEntry)
