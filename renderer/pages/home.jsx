@@ -6,7 +6,6 @@ import SideBar from '../components/sidebar';
 import MarkdownContainer from '../components/markdown-container';
 import { useState, useEffect } from 'react';
 import TopBar from '../components/topbar';
-import Toolbar from '../components/toolbar';
 import Cookies from 'js-cookie';
 
 export default function HomePage() {
@@ -20,19 +19,17 @@ export default function HomePage() {
     const [newFileChange, setNewFileChange] = useState('');
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [toggleState, setToggleState] = useState(false);
-
     const [latestFiles, setLatestFiles] = useState([]);
 
     const handleIconClick = () => {
         setToggleState(prev => !prev);
-        console.log(toggleState);
-
         const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
         setLatestFiles(latestFilesFromCookies);
     };
+
     const closePopup = () => {
-      handleIconClick()
-    }
+        handleIconClick();
+    };
 
     useEffect(() => {
         async function fetchFolderData() {
@@ -42,7 +39,6 @@ export default function HomePage() {
                     throw new Error('Failed to fetch folder data');
                 }
                 const data = await response.json();
-                console.log(data);
                 setFolderData(data);
             } catch (error) {
                 console.error('Error fetching folder data:', error);
@@ -52,28 +48,23 @@ export default function HomePage() {
     }, [triggerFetch]);
 
     const createNewSubject = async (inputValue) => {
-        console.log(inputValue);
-        const response = await fetch('http://localhost:3001/createSubject', {
+        await fetch('http://localhost:3001/createSubject', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: inputValue })
         });
         setTriggerFetch(prev => !prev);
-        console.log(response);
     };
 
     const handleFolderSelect = async (folder) => {
-        console.log("Selected folder:", folder);
         setCurrentFolder(folder);
         if (folder) {
             try {
-                const folderString = folder.title;
-                const response = await fetch(`http://localhost:3001/getNotesInSubject/${folderString}`);
+                const response = await fetch(`http://localhost:3001/getNotesInSubject/${folder.title}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch folder data');
                 }
                 const data = await response.json();
-                console.log(data);
                 setNotes(data);
             } catch (error) {
                 console.error('Error fetching folder data:', error);
@@ -83,17 +74,11 @@ export default function HomePage() {
 
     const createNewNote = async (inputValue, newFileChange) => {
         try {
-            console.log(newFileChange, inputValue);
-            const response = await fetch('http://localhost:3001/createNote', {
+            await fetch('http://localhost:3001/createNote', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ subject: newFileChange, title: inputValue })
             });
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log('Response:', data);
             handleFolderSelect(newFileChange);
         } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
@@ -101,23 +86,21 @@ export default function HomePage() {
     };
 
     const handleNoteSelect = async (note) => {
-        console.log("Selected Note:", note, "Subject:", currentFolder);
+        console.log("subject", currentFolder.title, "title", note.title)
         if (note) {
             try {
-                const noteString = note.title;
-                const response = await fetch(`http://localhost:3001/getContentsOfFolder`, {
+                const response = await fetch('http://localhost:3001/getContentsOfFolder', {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ subject: currentFolder.title, title: noteString })
+                    body: JSON.stringify({ subject: currentFolder.title, title: note.title })
                 }); 
                 if (!response.ok) {
                     throw new Error('Failed to fetch folder data');
                 }
                 const data = await response.json();
-                console.log(data);
                 setEditorContent(data.content);
-                updateLatestFiles(note.subject, note.title);
-                setCurrentFolder({ title: note.subject }); // Update current folder to match the note's subject
+                updateLatestFiles(note.title, currentFolder.title);
+                setCurrentFolder({ title: note.title });
             } catch (error) {
                 console.error('Error fetching folder data:', error);
             }
@@ -128,18 +111,19 @@ export default function HomePage() {
     const updateLatestFiles = (subject, title) => {
         const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
         const newFileEntry = { subject, title };
+        console.log("fuck you", newFileEntry)
 
-        const updatedLatestFiles = latestFilesFromCookies.filter(file => file.subject !== subject || file.title !== title);
-
+        const updatedLatestFiles = latestFilesFromCookies.filter(file => 
+            file.subject !== subject || file.title !== title
+        );
         updatedLatestFiles.unshift(newFileEntry);
 
         const latestFilesToStore = updatedLatestFiles.slice(0, 8);
-        console.log(JSON.stringify(latestFilesToStore))
+
         Cookies.set('latestFiles', JSON.stringify(latestFilesToStore), { expires: 7 });
     };
 
     const createNewSomething = async (inputValue) => {
-        console.log("Input value:", inputValue);
         if (createState === "subject") {
             createNewSubject(inputValue);
         } else {
@@ -181,8 +165,7 @@ export default function HomePage() {
         }
     };
 
-    const handleJSONChange = async (json) => {
-        console.log(json);
+    const handleJSONChange = (json) => {
         setJson(json);
     };
 
@@ -199,6 +182,7 @@ export default function HomePage() {
                     setSelectedNote={setSelectedNote}
                     setNewFileChange={setNewFileChange}
                     newFileChange={newFileChange}
+                    setCurrentFolder={setCurrentFolder}
                     onNoteSelect={handleNoteSelect}
                     closePopup={closePopup} 
                     latestFiles={latestFiles}
@@ -207,11 +191,9 @@ export default function HomePage() {
 
             <div className='flex'>
                 {folderData ? (
-                    <>
-                        <Toolbar 
-                            handleIconClick={handleIconClick}
-                        />
-                    </>
+                    <ToolBar 
+                        handleIconClick={handleIconClick}
+                    />
                 ) : (
                     <p>Loading...</p>
                 )}
@@ -219,7 +201,7 @@ export default function HomePage() {
                     <MarkdownContainer
                         onJSONChange={handleJSONChange}
                         content={editorContent}
-                        selectednote={selectedNote && selectedNote.title ? selectedNote.title : "none"}
+                        selectednote={selectedNote ? selectedNote.title : "none"}
                     />
                 </div>
             </div>

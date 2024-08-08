@@ -13,6 +13,7 @@ export default function CollectionPopup({
     setNewFileChange, 
     newFileChange, 
     onNoteSelect, 
+    setCurrentFolder,
     latestFiles 
 }) {
     const [selectedFolder, setSelectedFolder] = useState(null);
@@ -20,21 +21,27 @@ export default function CollectionPopup({
     const [newState, setNewState] = useState(false);
     const [queryNameState, setQueryNameState] = useState(false);
     const [queryTypeState, setQueryTypeState] = useState(true);
-    const [inputValue, setInputValue] = useState(""); // State to store input value
+    const [inputValue, setInputValue] = useState(""); 
 
     const handleFolderClick = (folder) => {
         setSelectedFolder((prevSelectedFolder) =>
             prevSelectedFolder === folder ? null : folder
-        );
+        );  
         setSelectedFolderContainer((prevSelectedFolderContainer) =>
             prevSelectedFolderContainer === folder ? null : folder
         );
         onFolderSelect(folder);
     };
+
     const reset = () => {
         setQueryNameState(false);
         setQueryTypeState(true);
         setNewState(false);
+    };
+
+    const stupidJankCode = (subjectName) => {
+        const stupidJankObject = { title: subjectName.subject };
+        setCurrentFolder(stupidJankObject);
     };
 
     const buttonClicked = () => {
@@ -59,7 +66,7 @@ export default function CollectionPopup({
                                             key={folder.id}
                                         >   
                                             <div className={`${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
-                                                <p className="folder-title "  style={{ textTransform: 'capitalize', fontSize: '16px' }}>
+                                                <p className="folder-title" style={{ textTransform: 'capitalize', fontSize: '16px' }}>
                                                     {folder.title}
                                                 </p>
                                             </div>
@@ -90,7 +97,7 @@ export default function CollectionPopup({
                                             key={folder.id}
                                         >   
                                             <div className={`${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
-                                                <p className="folder-title "  style={{ textTransform: 'capitalize', fontSize: '16px' }}>
+                                                <p className="folder-title" style={{ textTransform: 'capitalize', fontSize: '16px' }}>
                                                     {folder.title}
                                                 </p>
                                             </div>
@@ -99,7 +106,7 @@ export default function CollectionPopup({
                                                     <div className='note-data-container'>
                                                         <div>
                                                             {noteData.map((note, index) => (
-                                                                <li key={index} onClick={() => {onNoteSelect(note); closePopup()}}>{note.title}</li>
+                                                                <li key={index} onClick={() => {onNoteSelect(note); closePopup();}}>{note.title}</li>
                                                             ))}
                                                         </div>
                                                     </div>
@@ -112,7 +119,7 @@ export default function CollectionPopup({
                             <div className="line-container"><div className="line"></div></div>
                             <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
                             {latestFiles.map((file, index) => (
-                                <div key={index} onClick={() => {onNoteSelect(file); }}>
+                                <div key={index} onClick={() => { stupidJankCode(file); onNoteSelect(file); }}>
                                     {file.title} - {file.subject}
                                 </div>
                             ))}
