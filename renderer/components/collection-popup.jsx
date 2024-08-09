@@ -21,7 +21,7 @@ export default function CollectionPopup({
     const [newState, setNewState] = useState(false);
     const [queryNameState, setQueryNameState] = useState(false);
     const [queryTypeState, setQueryTypeState] = useState(true);
-    const [inputValue, setInputValue] = useState(""); 
+    const [inputValue, setInputValue] = useState(""); // State to store input value
 
     const handleFolderClick = (folder) => {
         setSelectedFolder((prevSelectedFolder) =>
@@ -32,17 +32,28 @@ export default function CollectionPopup({
         );
         onFolderSelect(folder);
     };
-
     const reset = () => {
         setQueryNameState(false);
         setQueryTypeState(true);
         setNewState(false);
     };
 
-    const stupidJankCode = (subjectName) => {
-        const stupidJankObject = { title: subjectName.subject };
-        setCurrentFolder(stupidJankObject);
-    };
+const stupidJankCode = (subjectName) => {
+    console.log("Setting folder to:", subjectName.subject);
+    const folderObject = { title: subjectName.subject };
+    setCurrentFolder(folderObject); // Ensure the parent gets the correctly formatted object
+    onFolderSelect(folderObject); // Update the notes or other state based on this selection
+};
+
+  const moreStupidShit = (folder, file) => {
+    console.log(folder, file)
+    let dumbObject = {
+        title: folder.title,
+        subject: file.title 
+    }
+    console.log("yay", dumbObject)
+    onNoteSelect(dumbObject);
+  }
 
     const buttonClicked = () => {
         setNewState(!newState);
@@ -66,7 +77,7 @@ export default function CollectionPopup({
                                             key={folder.id}
                                         >   
                                             <div className={`${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
-                                                <p className="folder-title" style={{ textTransform: 'capitalize', fontSize: '16px' }}>
+                                                <p className="folder-title "  style={{ textTransform: 'capitalize', fontSize: '16px' }}>
                                                     {folder.title}
                                                 </p>
                                             </div>
@@ -75,7 +86,7 @@ export default function CollectionPopup({
                                                     <div className='note-data-container'>
                                                         <div>
                                                             {noteData.map((note, index) => (
-                                                                <li key={index} onClick={() => onNoteSelect(note)}>{note.title}</li>
+                                                                <li key={index} onClick={() => { console.log("HI I GOt CLICKed"); moreStupidShit(note, folder)}}>{note.title}</li>
                                                             ))}
                                                         </div>
                                                     </div>
@@ -97,7 +108,7 @@ export default function CollectionPopup({
                                             key={folder.id}
                                         >   
                                             <div className={`${selectedFolder === folder ? 'selected-folder' : 'not-selected-folder'}`} onClick={() => handleFolderClick(folder)}>
-                                                <p className="folder-title" style={{ textTransform: 'capitalize', fontSize: '16px' }}>
+                                                <p className="folder-title "  style={{ textTransform: 'capitalize', fontSize: '16px' }}>
                                                     {folder.title}
                                                 </p>
                                             </div>
@@ -106,7 +117,7 @@ export default function CollectionPopup({
                                                     <div className='note-data-container'>
                                                         <div>
                                                             {noteData.map((note, index) => (
-                                                                <li key={index} onClick={() => {onNoteSelect(note); closePopup();}}>{note.title}</li>
+                                                                <li key={index} onClick={() => {onNoteSelect(note); closePopup()}}>{note.title}</li>
                                                             ))}
                                                         </div>
                                                     </div>
@@ -119,7 +130,7 @@ export default function CollectionPopup({
                             <div className="line-container"><div className="line"></div></div>
                             <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
                             {latestFiles.map((file, index) => (
-                                <div key={index} onClick={() => { stupidJankCode(file); onNoteSelect(file); }}>
+                                <div key={index} onClick={() => { stupidJankCode(file); onNoteSelect(file)}}>
                                     {file.title} - {file.subject}
                                 </div>
                             ))}

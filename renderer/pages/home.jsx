@@ -14,13 +14,13 @@ export default function HomePage() {
     const [selectedNote, setSelectedNote] = useState(null);
     const [editorContent, setEditorContent] = useState('');
     const [json, setJson] = useState(null);
-    const [currentFolder, setCurrentFolder] = useState(null);
+    const [currentFolder, setCurrentFolder] = useState({});
     const [createState, setCreateState] = useState('');
     const [newFileChange, setNewFileChange] = useState('');
     const [triggerFetch, setTriggerFetch] = useState(false);
     const [toggleState, setToggleState] = useState(false);
     const [latestFiles, setLatestFiles] = useState([]);
-
+    
     const handleIconClick = () => {
         setToggleState(prev => !prev);
         const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
@@ -57,13 +57,12 @@ export default function HomePage() {
     };
 
     const handleFolderSelect = async (folder) => {
-        setCurrentFolder(folder);
+        console.log("Handling folder selection:", folder);
+        setCurrentFolder(folder); // Set the current folder immediately
         if (folder) {
             try {
                 const response = await fetch(`http://localhost:3001/getNotesInSubject/${folder.title}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch folder data');
-                }
+                if (!response.ok) throw new Error('Failed to fetch folder data');
                 const data = await response.json();
                 setNotes(data);
             } catch (error) {
@@ -85,33 +84,46 @@ export default function HomePage() {
         }
     };
 
-    const handleNoteSelect = async (note) => {
-        console.log("subject", currentFolder.title, "title", note.title)
-        if (note) {
-            try {
-                const response = await fetch('http://localhost:3001/getContentsOfFolder', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ subject: currentFolder.title, title: note.title })
-                }); 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch folder data');
-                }
-                const data = await response.json();
-                setEditorContent(data.content);
-                updateLatestFiles(note.title, currentFolder.title);
-                setCurrentFolder({ title: note.title });
-            } catch (error) {
-                console.error('Error fetching folder data:', error);
-            }
-        }
-        setSelectedNote(note);
+    const stupidJankCode = (subjectName) => {
+        console.log("Setting folder to:", subjectName.subject);
+        const folderObject = { title: subjectName.subject };
+        setCurrentFolder(folderObject); // Ensure the parent gets the correctly formatted object
     };
+
+    const handleNoteSelect = (note) => {
+        console.log(note)
+        const folderObject = { title: note.subject };
+        setCurrentFolder(folderObject);
+        setSelectedNote(note); // Select the note after updating the current folder
+    };
+
+    useEffect(() => {
+        if (currentFolder.title && selectedNote) {
+            const fetchContent = async () => {
+                try {
+                    const response = await fetch('http://localhost:3001/getContentsOfFolder', {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ subject: currentFolder.title, title: selectedNote.title })
+                    });
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch folder data');
+                    }
+                    const data = await response.json();
+                    setEditorContent(data.content);
+                    updateLatestFiles(selectedNote.title, currentFolder.title);
+                } catch (error) {
+                    console.error('Error fetching folder data:', error);
+                }
+            };
+            fetchContent();
+        }
+    }, [currentFolder, selectedNote]); // Run the effect whenever currentFolder or selectedNote changes
 
     const updateLatestFiles = (title, subject) => {
         const latestFilesFromCookies = JSON.parse(Cookies.get('latestFiles') || '[]');
         const newFileEntry = { subject, title };
-        console.log("fuck you", newFileEntry)
+        console.log("fuck you", newFileEntry);
 
         const updatedLatestFiles = latestFilesFromCookies.filter(file => 
             file.subject !== subject || file.title !== title
@@ -186,6 +198,7 @@ export default function HomePage() {
                     onNoteSelect={handleNoteSelect}
                     closePopup={closePopup} 
                     latestFiles={latestFiles}
+                    currentFolder={currentFolder}
                 />
             }
 

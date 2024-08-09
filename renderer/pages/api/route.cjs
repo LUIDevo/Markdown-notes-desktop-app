@@ -108,7 +108,7 @@ app.get('/getNotesInSubject/:folder', (req, res) => {
 
 app.post('/getContentsOfFolder', (req, res) => {
     let { title, subject } = req.body;
-    console.log(title, subject);
+    console.log("hi I am stupid fucking server side code", title, subject);
 
     if (!title) {
         return res.sendStatus(400);
