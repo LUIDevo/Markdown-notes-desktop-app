@@ -128,12 +128,16 @@ const stupidJankCode = (subjectName) => {
                                 </div>
                             </div>
                             <div className="line-container"><div className="line"></div></div>
-                            <h3 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h3>
-                            {latestFiles.map((file, index) => (
-                                <div key={index} onClick={() => { stupidJankCode(file); onNoteSelect(file)}}>
-                                    {file.title} - {file.subject}
+                            <div className="folder-outer-container">
+                            <h5 style={{fontSize: "16px", fontWeight: "200"}}>Recent Files</h5>
+                              <div className="folder-container">
+                                {latestFiles.map((file, index) => (
+                                    <div key={index} className="folder-title" onClick={() => { stupidJankCode(file); onNoteSelect(file)}}>
+                                        {file.title} - {file.subject}
+                                    </div>
+                                ))}
                                 </div>
-                            ))}
+                            </div>
                         </>
                     )}
                 </div>
