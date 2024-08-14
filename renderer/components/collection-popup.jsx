@@ -70,7 +70,7 @@ const stupidJankCode = (subjectName) => {
                     {selectedFolder ? (
                         <div className="folder-outer-container"> 
                             <div className="folder-container"> 
-                                {folderData.map((folder) => (
+                               {folderData.map((folder) => (
                                     selectedFolder === folder && (
                                         <div
                                             className={`flex subject column ${selectedFolderContainer === folder ? 'selected-folder-container' : ''}`} 
