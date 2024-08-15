@@ -12,6 +12,7 @@ export default function HomePage() {
   const [folderContents, setFolderContents] = useState({}); // Store contents of each folder
   const [editorContent, setEditorContent] = useState(''); // Content of the currently selected note
   const [selectedNote, setSelectedNote] = useState(null); // Currently selected note
+  const [selectedFolder, setSelectedFolder] = useState(null);
 
   useEffect(() => {
     const fetchFolders = async () => {
@@ -31,6 +32,27 @@ export default function HomePage() {
     console.log("Content changed:", newContent);
     setEditorContent(newContent);
   };
+
+  useEffect(() => {
+    const getContentsOfFile = async () => {
+      try {
+        if (selectedNote && selectedFolder) {
+          console.log("Fetching file content for:", selectedNote.title, selectedFolder);
+          const response = await fetch('http://localhost:3001/getContentsOfFile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title: selectedNote.title, subject: selectedFolder })
+          });
+          const data = await response.json();
+          console.log("Fetched file content:", data);
+          setEditorContent(data.content); // Update editor content with fetched data
+        }
+      } catch (error) {
+        console.error("Error fetching file contents:", error);
+      }
+    };
+    if (selectedNote) getContentsOfFile(); // Call only if selectedNote is set
+  }, [selectedNote, selectedFolder]);
 
   const getContentsOfFolder = async (folderTitle) => {
     try {
@@ -61,7 +83,7 @@ export default function HomePage() {
         folderList.map((folder, index) => (
           <div className="folderContainer" key={index}>
             <div
-              onClick={() => getContentsOfFolder(folder.title)}
+              onClick={() => { getContentsOfFolder(folder.title); setSelectedFolder(folder.title); }}
               style={{ color: "white", cursor: "pointer" }}
             >
               <svg
@@ -84,7 +106,7 @@ export default function HomePage() {
                     key={fileIndex}
                     onClick={() => {
                       setSelectedNote(file);
-                      setEditorContent(file.content);
+                      console.log("Selected note:", file.title);
                     }}
                     style={{ color: "white", marginLeft: "20px", cursor: "pointer" }}
                   >
@@ -101,8 +123,7 @@ export default function HomePage() {
         <div className="activity-container flex column">
           <MarkdownContainer
             onJSONChange={handleJSONChange}
-            content={editorContent}
-            selectednote={selectedNote ? selectedNote.title : "none"}
+            content={editorContent} // Pass the editor content as prop
           />
         </div>
       </div>
